@@ -1,0 +1,11 @@
+{
+    "name": "anexia/composer-tools",
+    "version": "1.0.0",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": { "Anexia\\ComposerTools\\": "src" }
+    },
+    "require": {
+        "composer/semver": "~1.4.2"
+    }
+}
