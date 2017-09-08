@@ -62,35 +62,11 @@ trait ComposerPackagistTrait
         if (count($packages) > 0) {
             foreach ($packages as $package) {
                 $name = $package->name;
-                $latestStableVersNo = '';
 
                 /**
                  * get latest stable version number
                  */
-                // get version information from packagist
-                $packagistUrl = 'https://packagist.org/packages/' . $name . '.json';
-
-                try {
-                    $packagistInfo = json_decode(file_get_contents($packagistUrl));
-                    $versions = $packagistInfo->package->versions;
-                } catch (\Exception $e) {
-                    $versions = [];
-                }
-
-                if (count($versions) > 0) {
-                    $latestStableNormVersNo = '';
-                    foreach ($versions as $versionData) {
-                        $versionNo = $versionData->version;
-                        $normVersNo = $versionData->version_normalized;
-                        $stability = VersionParser::normalizeStability(VersionParser::parseStability($versionNo));
-
-                        // only use stable version numbers
-                        if ($stability === 'stable' && version_compare($normVersNo, $latestStableNormVersNo) >= 0) {
-                            $latestStableVersNo = $versionNo;
-                            $latestStableNormVersNo = $normVersNo;
-                        }
-                    }
-                }
+                $latestStableVersNo = $this->getLatestFrameworkVersion($name);
 
                 /**
                  * prepare result
@@ -98,7 +74,8 @@ trait ComposerPackagistTrait
                 $moduleVersions[] = [
                     'name' => $name,
                     'installed_version' => $package->version,
-                    'newest_version' => $latestStableVersNo
+                    'newest_version' => $latestStableVersNo,
+                    'licenses' => $package->license
                 ];
             }
         }

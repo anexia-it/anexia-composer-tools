@@ -1,6 +1,7 @@
 {
     "name": "anexia/composer-tools",
-    "version": "1.0.0",
+    "version": "1.1.0",
+    "description": "fetch version and license information of installed composer packages from packagist",
     "license": "MIT",
     "autoload": {
         "psr-4": { "Anexia\\ComposerTools\\": "src" }

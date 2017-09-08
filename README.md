@@ -1,6 +1,6 @@
 # Anexia Composer Tools
 
-A composer package used to fetch version numbers from all installed composer packages (included in composer.json) and
+A composer package used to fetch version numbers and license information from all installed composer packages (included in composer.json) and
 their latest version number registered on packagist. 
 
 ## Installation and configuration
@@ -8,7 +8,7 @@ their latest version number registered on packagist.
 Install the module via composer, therefore adapt the ``require`` part of your ``composer.json``:
 ```
 "require": {
-    "anexia/composer-tools": "1.0.0"
+    "anexia/composer-tools": "1.1.0"
 }
 ```
 
