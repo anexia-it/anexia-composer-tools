@@ -1,6 +1,6 @@
 # Anexia Composer Tools
 
-A composer package used to fetch version numbers and license information from all installed composer packages (included in composer.json) and
+A composer package used to fetch version numbers and licence information from all installed composer packages (included in composer.json) and
 their latest version number registered on packagist. 
 
 ## Installation and configuration
@@ -8,7 +8,7 @@ their latest version number registered on packagist.
 Install the module via composer, therefore adapt the ``require`` part of your ``composer.json``:
 ```
 "require": {
-    "anexia/composer-tools": "1.1.0"
+    "anexia/composer-tools": "1.2.0"
 }
 ```
 
@@ -49,7 +49,7 @@ class VersionMonitoringController
             'platform_version' => phpversion(),
             'framework' => 'laravel',
             'framework_installed_version' => $this->getCurrentFrameworkVersion(),
-            'framework_newest_version' => $this->getLatestFrameworkVersion('laravel/framework')
+            'framework_newest_version' => $this->getLatestPackageVersion('laravel/framework')
         ];
         
         $modules = $this->getComposerPackageData();
@@ -89,12 +89,24 @@ A possible response of the example controller action might look like this:
       {
          "name":"package-1",
          "installed_version":"3.1.10",
-         "newest_version":"3.3.2"
+         "installed_version_licences":[
+            "BSD-2-Clause"
+         ],
+         "newest_version":"3.3.2",
+         "newest_version_licences":[
+            "BSD-3-Clause"
+         ]
       },
       {
          "name":"package-2",
          "installed_version":"1.4",
-         "newest_version":"1.4"
+         "installed_version_licences":[
+            "MIT"
+         ],
+         "newest_version":"1.4",
+         "newest_version_licences":[
+            "MIT"
+         ]
       },
       ...
    ]

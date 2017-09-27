@@ -10,14 +10,29 @@ use Composer\Semver\VersionParser;
 trait ComposerPackagistTrait
 {
     /**
-     * Get latest (stable) version number of composer laravel package (laravel/framework)
+     * Get latest (stable) version number of composer package
      *
      * @param string $packageName, the name of the package as registered on packagist, e.g. 'laravel/framework'
-     * @return string
+     * @return string|null
      */
-    public function getLatestFrameworkVersion($packageName)
+    public function getLatestPackageVersion($packageName)
     {
-        $lastVersion = '';
+        $lastVersion = $this->getLatestPackage($packageName);
+
+        if (is_object($lastVersion)) {
+            return $lastVersion->version;
+        }
+    }
+
+    /**
+     * Get latest (stable) package from packagist
+     *
+     * @param string $packageName, the name of the package as registered on packagist, e.g. 'laravel/framework'
+     * @return object|null
+     */
+    public function getLatestPackage($packageName)
+    {
+        $lastVersion = null;
 
         // get version information from packagist
         $packagistUrl = 'https://packagist.org/packages/' . $packageName . '.json';
@@ -38,7 +53,7 @@ trait ComposerPackagistTrait
 
                 // only use stable version numbers
                 if ($stability === 'stable' && version_compare($normVersNo, $latestStableNormVersNo) >= 0) {
-                    $lastVersion = $versionNo;
+                    $lastVersion = $versionData;
                     $latestStableNormVersNo = $normVersNo;
                 }
             }
@@ -64,9 +79,9 @@ trait ComposerPackagistTrait
                 $name = $package->name;
 
                 /**
-                 * get latest stable version number
+                 * get latest stable version of the package
                  */
-                $latestStableVersNo = $this->getLatestFrameworkVersion($name);
+                $latestStable = $this->getLatestPackage($name);
 
                 /**
                  * prepare result
@@ -74,8 +89,9 @@ trait ComposerPackagistTrait
                 $moduleVersions[] = [
                     'name' => $name,
                     'installed_version' => $package->version,
-                    'newest_version' => $latestStableVersNo,
-                    'licenses' => $package->license
+                    'installed_version_licences' => $package->license,
+                    'newest_version' => $latestStable->version,
+                    'newest_version_licences' => $latestStable->license,
                 ];
             }
         }
