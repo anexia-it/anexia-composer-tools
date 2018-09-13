@@ -25,6 +25,31 @@ trait ComposerPackagistTrait
     }
 
     /**
+     * Return whichever object has the newer version
+     *
+     * @param object $versionData
+     * @param object $lastVersion
+     * @return object
+     */
+    private function getNewerVersion($versionData, $lastVersion) {
+        $versionNo = $versionData->version;
+        $normVersionNo = $versionData->version_normalized;
+        $stability = VersionParser::normalizeStability(VersionParser::parseStability($versionNo));
+        $isStable = $stability === 'stable';
+
+        if ($lastVersion === null && $isStable ) {
+            return $versionData;
+        }
+
+        // only use stable version numbers
+        if ($isStable && version_compare($normVersionNo, $lastVersion->version_normalized) >= 0) {
+            return $versionData;
+        }
+
+        return $lastVersion;
+    }
+
+    /**
      * Get latest (stable) package from packagist
      *
      * @param string $packageName, the name of the package as registered on packagist, e.g. 'laravel/framework'
@@ -32,34 +57,20 @@ trait ComposerPackagistTrait
      */
     public function getLatestPackage($packageName)
     {
-        $lastVersion = null;
-
         // get version information from packagist
         $packagistUrl = 'https://packagist.org/packages/' . $packageName . '.json';
+        $latestVersion = null;
 
         try {
             $packagistInfo = json_decode(file_get_contents($packagistUrl));
             $versions = $packagistInfo->package->versions;
-        } catch (\Exception $e) {
-            $versions = [];
-        }
-
-        if (count($versions) > 0) {
-            $latestStableNormVersNo = '';
-            foreach ($versions as $versionData) {
-                $versionNo = $versionData->version;
-                $normVersNo = $versionData->version_normalized;
-                $stability = VersionParser::normalizeStability(VersionParser::parseStability($versionNo));
-
-                // only use stable version numbers
-                if ($stability === 'stable' && version_compare($normVersNo, $latestStableNormVersNo) >= 0) {
-                    $lastVersion = $versionData;
-                    $latestStableNormVersNo = $normVersNo;
-                }
+            foreach ($versions as $index => $version) {
+                $latestVersion = $this->getNewerVersion($version, $latestVersion);
             }
+            return $latestVersion;
+        } catch (\Exception $e) {
+            return null;
         }
-
-        return $lastVersion;
     }
 
     /**
@@ -83,16 +94,18 @@ trait ComposerPackagistTrait
                  */
                 $latestStable = $this->getLatestPackage($name);
 
-                /**
-                 * prepare result
-                 */
-                $moduleVersions[] = [
+                $module = [
                     'name' => $name,
                     'installed_version' => $package->version,
                     'installed_version_licences' => $package->license,
-                    'newest_version' => $latestStable->version,
-                    'newest_version_licences' => $latestStable->license,
                 ];
+
+                if($latestStable !== null) {
+                    $module['newest_version'] = $latestStable->version;
+                    $module['newest_version_licences'] = $latestStable->license;
+                }
+
+                $moduleVersions[] = $module;
             }
         }
 
