@@ -1,6 +1,6 @@
 {
     "name": "anexia/composer-tools",
-    "version": "1.2.0",
+    "version": "1.3.0",
     "description": "fetch version and licence information of installed composer packages from packagist",
     "license": "MIT",
     "autoload": {

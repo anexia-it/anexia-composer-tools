@@ -8,7 +8,7 @@ their latest version number registered on packagist.
 Install the module via composer, therefore adapt the ``require`` part of your ``composer.json``:
 ```
 "require": {
-    "anexia/composer-tools": "1.2.0"
+    "anexia/composer-tools": "1.3.0"
 }
 ```
 
