@@ -1,6 +1,6 @@
 {
     "name": "anexia/composer-tools",
-    "version": "1.4.2",
+    "version": "1.4.3",
     "description": "fetch version and licence information of installed composer packages from packagist",
     "license": "MIT",
     "autoload": {
@@ -8,6 +8,6 @@
     },
     "require": {
         "ext-json": "*",
-        "composer/semver": "~1.7"
+        "composer/semver": "*"
     }
 }
